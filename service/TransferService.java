@@ -20,33 +20,49 @@ import java.time.LocalDateTime;
 public class TransferService {
 
     @Autowired
-    AccountUserRepository accountUserRepository;
-
+    private AccountUserRepository accountUserRepository;
     @Autowired
-    TransferRepository transferRepository;
-
+    private TransferRepository transferRepository;
     @Autowired
-    BalanceRepository balanceRepository;
+    private BalanceRepository balanceRepository;
 
     @Transactional
-    public void transferByEmail(Integer senderId, String receiverEmail, BigDecimal amount){
-        BankDataAccountUser sender=accountUserRepository.findById(senderId)
-                .orElseThrow(()
-                -> new NotFoundUserException("Not found sender, Please try again."));
+    public void transferByEmail(Integer senderId, String receiverEmail, BigDecimal amount) {
+        BankDataAccountUser receiver = accountUserRepository.findByEmail(receiverEmail)
+                .orElseThrow(() -> new NotFoundUserException("Receiver not found."));
 
-        BankDataAccountUser receiver=accountUserRepository.findByEmail(receiverEmail)
-                .orElseThrow(()
-                -> new NotFoundUserException("Not found receiver, please try again."));
+        executeCoreTransfer(senderId, receiver, amount);
+    }
+
+    @Transactional
+    public void transferByNumber(Integer senderId, String receiverNumber, BigDecimal amount) {
+        BankDataAccountUser receiver = accountUserRepository.findByNumber(receiverNumber)
+                .orElseThrow(() -> new NotFoundUserException("Receiver not found."));
+
+        executeCoreTransfer(senderId, receiver, amount);
+    }
+
+    private void executeCoreTransfer(Integer senderId, BankDataAccountUser receiver, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Invalid transfer amount.");
+        }
+
+        BankDataAccountUser sender = accountUserRepository.findById(senderId)
+                .orElseThrow(() -> new NotFoundUserException("Sender not found."));
+
+        if (senderId.equals(receiver.getId())) {
+            throw new IllegalArgumentException("Source and destination accounts cannot be the same.");
+        }
 
         BalanceOfUser senderBalance = balanceRepository.findById(senderId)
-                .orElseThrow(() -> new RuntimeException("Error! try again."));
-
+                .orElseThrow(() -> new RuntimeException("Sender balance not found."));
         BalanceOfUser receiverBalance = balanceRepository.findById(receiver.getId())
-                .orElseThrow(() -> new RuntimeException("Error! try again."));
+                .orElseThrow(() -> new RuntimeException("Receiver balance not found."));
 
-        if (senderBalance.getBalance().compareTo(amount)<0){
-        throw new InsufficientBalanceException("Insufficient balance.");
+        if (senderBalance.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance.");
         }
+
         senderBalance.setBalance(senderBalance.getBalance().subtract(amount));
         receiverBalance.setBalance(receiverBalance.getBalance().add(amount));
 
@@ -59,6 +75,7 @@ public class TransferService {
                 .value(amount)
                 .time(LocalDateTime.now())
                 .build();
+
         transferRepository.save(history);
     }
 }
