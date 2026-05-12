@@ -22,9 +22,9 @@ public class UserService {
     public void toCreateAccount(UserDTO userDTO){
         BankDataAccountUser bankDataAccountUser=new BankDataAccountUser();
         AddressOfUser addressOfUser=new AddressOfUser();
-
         bankDataAccountUser.setName(userDTO.getName());
         bankDataAccountUser.setEmail(userDTO.getEmail());
+        bankDataAccountUser.setNumber(userDTO.getNumber());
         bankDataAccountUser.setPassword(userDTO.getPassword());
         bankDataAccountUser.setDateOfBirth(userDTO.getDateOfBirth());
         addressOfUser.setCountryOfOrigin(userDTO.getCountry());
