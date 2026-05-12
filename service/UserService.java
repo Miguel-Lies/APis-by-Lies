@@ -26,7 +26,7 @@ public class UserService {
         bankDataAccountUser.setName(userDTO.getName());
         bankDataAccountUser.setEmail(userDTO.getEmail());
         bankDataAccountUser.setPassword(userDTO.getPassword());
-        bankDataAccountUser.setDataOfBirth(userDTO.getDateOfBirth());
+        bankDataAccountUser.setDateOfBirth(userDTO.getDateOfBirth());
         addressOfUser.setCountryOfOrigin(userDTO.getCountry());
         addressOfUser.setState(userDTO.getState());
         addressOfUser.setCity(userDTO.getCity());
