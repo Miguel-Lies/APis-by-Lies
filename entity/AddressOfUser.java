@@ -18,7 +18,7 @@ public class AddressOfUser {
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")
-    private BankDataAccountUser userIdWithEndress;
+    private BankDataAccountUser userIdWithAddress;
 
     @Column(name = "country_of_origin",nullable = false)
     private String countryOfOrigin;
