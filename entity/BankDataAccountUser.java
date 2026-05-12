@@ -25,6 +25,9 @@ public class BankDataAccountUser {
     @Column(name = "email",length = 90,nullable = false,unique = true)
     private String email;
 
+    @Column(name = "number",nullable = false,unique = true)
+    private String number;
+
     @Column(name = "password",length = 20,nullable = false)
     private String password;
 

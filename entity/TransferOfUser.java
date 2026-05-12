@@ -20,11 +20,11 @@ public class TransferOfUser {
     private Integer id;
 
     @ManyToOne
-    @Column(name = "name_of_sender",nullable = false)
+    @JoinColumn(name = "name_of_sender",nullable = false)
     private BankDataAccountUser sender;
 
     @ManyToOne
-    @Column(name = "name_of_receiver",nullable = false)
+    @JoinColumn(name = "name_of_receiver",nullable = false)
     private BankDataAccountUser receiver;
 
     @Column(name = "value_of_transfer",nullable = false,precision = 19,scale = 2)
